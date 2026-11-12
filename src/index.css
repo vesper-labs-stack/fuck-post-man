@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/* iOS design tokens                                                    */
+/* ------------------------------------------------------------------ */
+:root {
+  --bg: #f2f2f7;
+  --surface: #ffffff;
+  --surface-2: #f9f9fb;
+  --fill: rgba(120, 120, 128, 0.12);
+  --fill-2: rgba(120, 120, 128, 0.08);
+  --separator: rgba(60, 60, 67, 0.29);
+  --hairline: rgba(60, 60, 67, 0.14);
+  --label: #1c1c1e;
+  --label-2: rgba(60, 60, 67, 0.6);
+  --label-3: rgba(60, 60, 67, 0.3);
+  --material: rgba(255, 255, 255, 0.72);
+
+  --accent: 0 122 255;
+  --green: 52 199 89;
+  --red: 255 59 48;
+  --orange: 255 149 0;
+  --purple: 175 82 222;
+  --teal: 90 200 250;
+  --indigo: 88 86 214;
+  --pink: 255 45 85;
+  --yellow: 255 204 0;
+}
+
+.dark {
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --fill: rgba(120, 120, 128, 0.24);
+  --fill-2: rgba(120, 120, 128, 0.16);
+  --separator: rgba(84, 84, 88, 0.65);
+  --hairline: rgba(84, 84, 88, 0.4);
+  --label: #f5f5f7;
+  --label-2: rgba(235, 235, 245, 0.6);
+  --label-3: rgba(235, 235, 245, 0.3);
+  --material: rgba(28, 28, 30, 0.72);
+
+  --accent: 10 132 255;
+  --green: 48 209 88;
+  --red: 255 69 58;
+  --orange: 255 159 10;
+  --purple: 191 90 242;
+  --teal: 100 210 255;
+  --indigo: 94 92 230;
+  --pink: 255 55 95;
+  --yellow: 255 214 10;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+  }
+  body {
+    @apply bg-bg font-sans text-label antialiased;
+    overflow: hidden;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+  }
+  input,
+  textarea {
+    user-select: text;
+  }
+  ::selection {
+    background: rgb(var(--accent) / 0.25);
+  }
+}
+
+@layer components {
+  /* Frosted vibrancy material for bars / sidebar / menus */
+  .material {
+    background: var(--material);
+    backdrop-filter: blur(24px) saturate(1.8);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  }
+  .bar-border {
+    border-bottom: 1px solid var(--hairline);
+  }
+  .card {
+    @apply rounded-xl bg-surface shadow-ios;
+  }
+
+  .field-ios {
+    @apply w-full rounded-lg bg-fill px-3 py-1.5 text-sm text-label outline-none transition placeholder:text-label3 focus:ring-2 focus:ring-accent/40;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-4 py-1.5 text-sm font-semibold text-white transition hover:brightness-110 active:scale-[.97] disabled:opacity-40 disabled:hover:brightness-100;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-fill px-3 py-1.5 text-sm font-medium text-label transition hover:bg-accent/10 hover:text-accent active:scale-[.97] disabled:opacity-40;
+  }
+  .btn-plain {
+    @apply inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-accent transition hover:bg-accent/10 active:scale-[.97];
+  }
+  .icon-btn {
+    @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-label2 transition hover:bg-fill hover:text-label active:scale-95;
+  }
+  .seg {
+    @apply inline-flex items-center gap-0.5 rounded-full bg-fill p-0.5;
+  }
+  .seg-item {
+    @apply rounded-full px-3 py-1 text-xs font-medium text-label2 transition;
+  }
+  .seg-item-active {
+    @apply bg-surface text-label shadow-pill;
+  }
+  .row-ios {
+    @apply flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-fill;
+  }
+
+  /* iOS-style scrollbars */
+  .scroll-ios {
+    scrollbar-width: thin;
+    scrollbar-color: var(--label-3) transparent;
+  }
+  .scroll-ios::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scroll-ios::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-ios::-webkit-scrollbar-thumb {
+    background: var(--label-3);
+    border-radius: 999px;
+  }
+  .scroll-ios::-webkit-scrollbar-thumb:hover {
+    background: var(--label-2);
+  }
+  .scroll-ios::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+body.dragging-pointer,
+body.dragging-pointer * {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
