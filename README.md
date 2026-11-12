@@ -97,6 +97,46 @@ npm run build
 npm run tauri:build
 ```
 
+#### 打包工具下载超时（国内网络常见）
+
+`npm run tauri:build` 的**打包阶段**会从 GitHub 下载 WiX（约 41 MB）与 NSIS 工具集。网络慢或不稳定时可能报 `failed to bundle project: timeout: global` 而中断——此时 `cargo` 编译其实已成功，`src-tauri/target/release/` 下的便携 exe 仍可直接运行，只是没生成安装包。任选一种方式解决：
+
+**① 走本地代理**（最简单，bundler 尊重 `HTTPS_PROXY`）：
+
+```bash
+# macOS / Linux
+export HTTPS_PROXY=http://127.0.0.1:7890
+npm run tauri:build
+```
+
+```powershell
+# Windows PowerShell
+$env:HTTPS_PROXY="http://127.0.0.1:7890"
+npm run tauri:build
+```
+
+**② 用 GitHub 镜像**（Tauri 官方支持的环境变量，二选一；Windows PowerShell 用 `$env:名="值"` 设置）：
+
+```bash
+# 前缀式：只填镜像 host，bundler 会自动把完整 GitHub 地址拼到其后（适配 ghproxy 类镜像）
+export TAURI_BUNDLER_TOOLS_GITHUB_MIRROR=https://你的镜像host
+
+# 或模板式：用占位符 <owner> <repo> <version> <asset> 还原 GitHub Release 路径
+export TAURI_BUNDLER_TOOLS_GITHUB_MIRROR_TEMPLATE="https://你的镜像/<owner>/<repo>/releases/download/<version>/<asset>"
+```
+
+下载产物会按 CLI 内置的 SHA 哈希校验，经镜像不影响完整性。
+
+**③ 手动预置工具缓存**（离线兜底）：用下载工具（支持断点续传）拉取下列官方压缩包，解压到 `%LOCALAPPDATA%\tauri\`（Windows）后重跑，bundler 命中缓存即跳过下载：
+
+| 工具 | 官方地址 | 解压目标 |
+| --- | --- | --- |
+| WiX | `github.com/wixtoolset/wix3/releases/download/wix3141rtm/wix314-binaries.zip` | `WixTools314\`（根目录含 candle.exe / light.exe / wix.dll / darice.cub） |
+| NSIS | `github.com/tauri-apps/binary-releases/releases/download/nsis-3.13/nsis-3.13.zip` | `NSIS\`（去掉压缩包顶层 `nsis-3.13/` 目录） |
+| NSIS 插件 | `github.com/tauri-apps/nsis-tauri-utils/releases/download/nsis_tauri_utils-v0.5.3/nsis_tauri_utils.dll` | `NSIS\Plugins\x86-unicode\additional\` |
+
+> 缓存一次即可，后续打包不再联网下载工具。
+
 ### 常用检查
 
 ```bash
@@ -175,6 +215,7 @@ IPC 契约两侧均为 snake_case：
 - **Windows 启动报 WebView2 缺失**：安装 [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/)。
 - **端口 1420 被占用**：Vite 配置为 `strictPort`，会直接失败而非静默换端口；请释放 1420 或修改 `vite.config.ts` 与 `tauri.conf.json` 的 `devUrl`。
 - **Windows 重新编译前请先退出应用**：运行中的 exe 会锁定文件，导致 `cargo build` 失败。
+- **打包报 `timeout: global`**：WiX / NSIS 工具从 GitHub 下载超时（国内网络常见），`cargo` 编译本身已成功；解决办法见 [构建与打包](#构建与打包) 的「打包工具下载超时」小节。
 - **Linux 编译缺依赖**：参照 [Tauri 前置依赖](https://tauri.app/start/prerequisites/) 安装 webkit2gtk 等开发包。
 
 ## 贡献指南
