@@ -77,7 +77,7 @@ fuckpostman 是一个跨桌面的 API 调试客户端：编辑并发送 HTTP 请
 
 ```bash
 # 1. 克隆仓库
-git clone <你的仓库地址> fuckpostman
+git clone https://github.com/vesper-labs-stack/fuck-post-man fuckpostman
 cd fuckpostman
 
 # 2. 安装前端依赖
